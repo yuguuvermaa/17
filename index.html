@@ -785,11 +785,13 @@ function mandala(color){
   function addMonths(d,m){ var x=new Date(d.getTime()); x.setUTCMonth(x.getUTCMonth()+m); return x; }
   function monthsSince(now){
     var m=(now.getUTCFullYear()-START.getUTCFullYear())*12+(now.getUTCMonth()-START.getUTCMonth());
-    var a=addMonths(START,m); if(a>now){ m--; a=addMonths(START,m); } return { m:m, anchor:a };
+    var a=addMonths(START,m); if(a>now){ m--; a=addMonths(START,m); }
+    if(m<17){ m=17; a=addMonths(START,17); } // this card is month 17, never show less
+    return { m:m, anchor:a };
   }
   window.monthsSince = monthsSince; window.addMonths = addMonths;
   function tick(){
-    var now=new Date(), r=monthsSince(now), diff=Math.floor((now-r.anchor)/1000);
+    var now=new Date(), r=monthsSince(now), diff=Math.max(0,Math.floor((now-r.anchor)/1000));
     var d=Math.floor(diff/86400), h=Math.floor(diff%86400/3600), mi=Math.floor(diff%3600/60), s=diff%60;
     $('count').innerHTML = '<div class="mo">'+r.m+'<small>months of rehearsal</small></div>'+
       '<div class="rest">'+d+'<i>days</i>'+pad(h)+'<i>h</i>'+pad(mi)+'<i>m</i>'+pad(s)+'<i>s</i></div>';
